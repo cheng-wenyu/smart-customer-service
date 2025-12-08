@@ -9,7 +9,7 @@ from transformers import AutoTokenizer, AutoModel
 import torch
 import numpy as np
 from typing import List
-from .document_processor import DocumentProcessor
+from document_processor import DocumentProcessor
 
 class VectorSearch:
     def __init__(self, persist_directory: str = "./chroma_db"):
@@ -53,11 +53,6 @@ class VectorSearch:
         """
         将文档添加到向量数据库
         """
-        # 清空现有集合，避免重复添加
-        try:
-            self.collection.delete(where={})
-        except:
-            pass
         print(f"📝 正在处理 {len(documents)} 个文档...")
         
         # 为每个文档生成嵌入

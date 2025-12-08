@@ -1,0 +1,37 @@
+# MLOps配置
+version: "1.0"
+project: "smart-customer-service"
+
+# 模型配置
+model:
+  name: "rag-customer-service"
+  version: "2.0.0"
+  framework: "sentence-transformers"
+  embedding_model: "paraphrase-multilingual-MiniLM-L12-v2"
+
+# 监控配置
+monitoring:
+  prometheus_port: 9090
+  grafana_port: 3000
+  metrics_port: 8001
+  alert_rules:
+    - name: "high_cpu_usage"
+      expr: "system_cpu_usage_percent > 80"
+      duration: "5m"
+      severity: "warning"
+    - name: "high_request_latency"
+      expr: "http_request_duration_seconds{quantile=\"0.95\"} > 1"
+      duration: "2m"
+      severity: "critical"
+
+# 部署配置
+deployment:
+  docker:
+    image_name: "smart-customer-service"
+    tag: "latest"
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./data:/app/data"
+      - "./models:/app/models"
+      - "./logs:/app/logs"

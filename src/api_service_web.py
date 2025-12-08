@@ -74,7 +74,7 @@ async def startup_event():
         # 初始化向量搜索
         logger.info("🔄 初始化向量搜索系统...")
         vector_search = VectorSearch()
-        # vector_search.initialize()  # 已移除，因为在 __init__ 中初始化
+        vector_search.initialize()
         
         # 处理文档并添加到向量数据库
         if documents:
@@ -217,5 +217,5 @@ if __name__ == "__main__":
         app,
         host="0.0.0.0",
         port=8000,
-        log_level="info"    )
-
+        log_level="info"
+    )

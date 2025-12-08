@@ -1,6 +1,4 @@
-"""
-智能客服API服务 - 带网页界面版本
-"""
+# 智能客服API服务 - 带网页界面版本
 import os
 import sys
 from pathlib import Path
@@ -8,7 +6,8 @@ from pathlib import Path
 # 禁用ChromaDB遥测（减少日志噪音）
 os.environ['ANONYMIZED_TELEMETRY'] = 'False'
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
+from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, RedirectResponse
 from pydantic import BaseModel
 from typing import List, Optional
@@ -66,15 +65,12 @@ async def startup_event():
             logger.info(f"✅ 成功加载 {len(documents)} 个文档")
         else:
             logger.warning(f"⚠️  数据文件不存在: {data_file}")
-            # 创建示例数据
-            with open(data_file, 'w') as f:
-                f.write("退货政策：30天内无理由退货\n物流时间：3-5个工作日\n客服电话：400-123-4567")
-            documents = processor.load_documents(data_file)
+            documents = []
         
         # 初始化向量搜索
         logger.info("🔄 初始化向量搜索系统...")
         vector_search = VectorSearch()
-        # vector_search.initialize()  # 已移除，因为在 __init__ 中初始化
+        vector_search.initialize()
         
         # 处理文档并添加到向量数据库
         if documents:
@@ -109,28 +105,10 @@ async def chat_interface():
             <!DOCTYPE html>
             <html>
             <head><title>智能客服</title></head>
-            <body style="font-family: Arial; padding: 20px;">
+            <body>
                 <h1>🤖 智能客服系统</h1>
                 <p>聊天界面文件未找到，请确保 templates/chat.html 存在。</p>
                 <p>API文档: <a href="/docs">/docs</a></p>
-                <p>或者直接测试API: 
-                <form onsubmit="sendQuestion(); return false;">
-                    <input id="question" placeholder="输入问题" style="padding: 5px; width: 300px;">
-                    <button type="submit">发送</button>
-                </form>
-                <div id="answer"></div>
-                <script>
-                    async function sendQuestion() {
-                        const question = document.getElementById('question').value;
-                        const response = await fetch('/ask', {
-                            method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({question: question})
-                        });
-                        const data = await response.json();
-                        document.getElementById('answer').innerHTML = `答案: ${data.answer}`;
-                    }
-                </script>
             </body>
             </html>
             """
@@ -217,5 +195,5 @@ if __name__ == "__main__":
         app,
         host="0.0.0.0",
         port=8000,
-        log_level="info"    )
-
+        log_level="info"
+    )
