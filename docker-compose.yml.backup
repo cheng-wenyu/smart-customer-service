@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  web:
+    image: registry.cn-hangzhou.aliyuncs.com/acs/nginx:latest
+    ports:
+      - "5000:80"
+    volumes:
+      - ./static:/usr/share/nginx/html
+    restart: always
+  
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+    volumes:
+      - ./grafana_data:/var/lib/grafana
+    restart: always
+  
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    restart: always
+  
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8003:8000"
+    volumes:
+      - ./chroma_db/data:/chroma/chroma
+    restart: always
