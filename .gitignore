@@ -1,0 +1,51 @@
+# 环境配置和敏感信息
+.env
+.env.*
+*.log
+secrets/
+keys/
+
+# 数据库和向量存储
+chroma_db/
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# 日志文件
+logs/
+ai_proxy.log
+fixed_ai_service.log
+robust_ai_proxy.log
+simple_ai_proxy.log
+startup.log
+
+# Python虚拟环境
+venv/
+env/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 监控数据
+grafana_data/
+prometheus_data/
+
+# 模型文件（通常很大）
+triton_models/
+models/
+*.pth
+*.pt
+*.bin
+
+# IDE配置文件
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 系统文件
+.DS_Store
+Thumbs.db
