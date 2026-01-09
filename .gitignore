@@ -6,42 +6,25 @@ __pycache__/
 .Python
 env/
 venv/
-.venv/
 ENV/
 env.bak/
 venv.bak/
-pip-wheel-metadata/
 
-# Virtual Environments (你的venv目录)
-/venv/
+# Conda
+environment.yml
+.env
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
 
-# Docker & 数据文件（绝对不能提交！）
-chroma_db/           # 向量数据库数据
-logs/                # 日志文件
-data/                # 原始和处理后的数据（如果包含大文件）
-models/              # 下载的AI模型（非常大！）
-prometheus_data/     # Prometheus数据
-grafana_data/        # Grafana数据
-smart_service_images.tar  # Docker镜像包
+# Data
+data/models/
+data/vectors/
+logs/
 
-# 备份文件
-*.backup
-*.old
-*.bak
-*.tar
-*.gz
-*.zip
-
-# 你自己的备份目录
-_archive/
-
-# 大型嵌入模型（示例，根据你的模型名调整）
-/bge-small-zh/
-/sentence-transformers/
+# Docker
+Dockerfile
+docker-compose.yml

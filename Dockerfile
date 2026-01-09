@@ -20,8 +20,12 @@ ENV PIP_TRUSTED_HOST=pypi.tuna.tsinghua.edu.cn
 COPY requirements.txt .
 
 # 安装Python依赖（使用国内源）
-RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
-
+#RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
+# 安装Python依赖（使用国内源，增加超时和重试）
+RUN pip install --upgrade pip \
+    && pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+    && pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn \
+    && pip install --no-cache-dir --retries 5 --timeout 60 -r requirements.txt
 # 复制应用代码
 COPY . .
 
@@ -32,4 +36,6 @@ RUN mkdir -p logs/monitoring data/models
 EXPOSE 8000
 
 # 启动命令
-CMD ["python", "run.py"]
+#CMD ["python", "run.py"]
+CMD ["uvicorn", "src.api_service_final:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+

@@ -1,0 +1,214 @@
+import sys
+import os
+import time
+from datetime import datetime
+
+# 添加当前目录到路径
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+import prometheus_client
+import uvicorn
+import asyncio
+from contextlib import asynccontextmanager
+
+# 导入监控模块
+from monitoring.performance import PerformanceMonitor
+
+# 创建监控器
+monitor = PerformanceMonitor()
+
+# 应用生命周期管理
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # 启动时
+    print(f"{datetime.now()} - Starting Smart Customer Service with RAG...")
+    print(f"{datetime.now()} - Loading models and vector database...")
+    
+    # 尝试导入RAG服务
+    global rag_service
+    try:
+        from src.api_service import RagService
+        rag_service = RagService()
+        print(f"{datetime.now()} - RAG service initialized successfully")
+    except Exception as e:
+        print(f"{datetime.now()} - Error initializing RAG service: {e}")
+        rag_service = None
+    
+    yield
+    
+    # 关闭时
+    print(f"{datetime.now()} - Shutting down...")
+    if rag_service:
+        # 如果有清理逻辑
+        pass
+
+# 创建FastAPI应用
+app = FastAPI(title="Smart Customer Service RAG", lifespan=lifespan)
+
+# CORS设置
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Prometheus指标
+REQUEST_COUNT = prometheus_client.Counter(
+    'http_requests_total',
+    'Total HTTP requests',
+    ['endpoint', 'method']
+)
+
+REQUEST_LATENCY = prometheus_client.Histogram(
+    'http_request_latency_seconds',
+    'HTTP request latency in seconds',
+    ['endpoint', 'method'],
+    buckets=[0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
+)
+
+# 中间件：监控所有请求
+@app.middleware("http")
+async def monitor_requests(request: Request, call_next):
+    endpoint = request.url.path
+    method = request.method
+    
+    # 跳过监控端点
+    if endpoint in ["/metrics", "/health", "/favicon.ico"]:
+        response = await call_next(request)
+        return response
+    
+    # 记录请求开始
+    request_data = monitor.record_request_start()
+    start_time = time.time()
+    
+    try:
+        response = await call_next(request)
+        latency = time.time() - start_time
+        
+        # 记录到Prometheus
+        REQUEST_COUNT.labels(endpoint=endpoint, method=method).inc()
+        REQUEST_LATENCY.labels(endpoint=endpoint, method=method).observe(latency)
+        
+        # 记录到性能日志
+        response_body = b""
+        async for chunk in response.body_iterator:
+            response_body += chunk
+        
+        # 解码响应体（如果是JSON）
+        try:
+            response_text = response_body.decode('utf-8')
+            # 提取响应内容
+            import json
+            data = json.loads(response_text)
+            answer = data.get('answer', data.get('response', ''))
+        except:
+            answer = ""
+        
+        monitor.record_request_end(
+            request_data=request_data,
+            query=f"{method} {endpoint}",
+            response_text=answer,
+            error=(response.status_code >= 400)
+        )
+        
+        # 重新构建响应
+        return Response(
+            content=response_body,
+            status_code=response.status_code,
+            headers=dict(response.headers),
+            media_type=response.media_type
+        )
+        
+    except Exception as e:
+        latency = time.time() - start_time
+        REQUEST_COUNT.labels(endpoint=endpoint, method=method).inc()
+        monitor.record_request_end(
+            request_data=request_data,
+            query=f"{method} {endpoint}",
+            response_text="",
+            error=True
+        )
+        raise HTTPException(status_code=500, detail=str(e))
+
+# 基础端点
+@app.get("/")
+async def read_root():
+    return {
+        "message": "Smart Customer Service RAG API",
+        "endpoints": {
+            "/health": "健康检查",
+            "/query": "RAG查询 (POST)",
+            "/performance": "性能统计",
+            "/metrics": "Prometheus指标"
+        },
+        "status": "running"
+    }
+
+@app.get("/health")
+async def health_check():
+    """健康检查端点"""
+    status = {
+        "status": "healthy",
+        "service": "smart-customer-service-rag",
+        "timestamp": datetime.now().isoformat(),
+        "rag_available": rag_service is not None
+    }
+    return status
+
+@app.post("/query")
+async def query_rag(request: Request):
+    """RAG查询端点"""
+    if rag_service is None:
+        raise HTTPException(status_code=503, detail="RAG service not available")
+    
+    try:
+        data = await request.json()
+        question = data.get("question", "")
+        
+        if not question:
+            raise HTTPException(status_code=400, detail="Question is required")
+        
+        # 调用RAG服务
+        start_time = time.time()
+        result = rag_service.query(question)
+        latency = time.time() - start_time
+        
+        response = {
+            "question": question,
+            "answer": result.get("answer", ""),
+            "sources": result.get("sources", []),
+            "confidence": result.get("confidence", 0.0),
+            "processing_time": latency,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        return response
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Query failed: {str(e)}")
+
+@app.get("/performance")
+async def get_performance():
+    """获取性能统计"""
+    summary = monitor.generate_summary(last_n=100)
+    return summary
+
+@app.get("/metrics")
+async def get_metrics():
+    """Prometheus指标端点"""
+    return prometheus_client.generate_latest()
+
+if __name__ == "__main__":
+    print(f"{datetime.now()} - Starting Smart Customer Service RAG API...")
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=8000,
+        log_level="info",
+        access_log=True
+    )
