@@ -26,8 +26,8 @@ class VectorSearch:
         
         # 加载中文嵌入模型
         print("🔄 加载嵌入模型...")
-        self.tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-small-zh')
-        self.model = AutoModel.from_pretrained('BAAI/bge-small-zh')
+        self.tokenizer = AutoTokenizer.from_pretrained('/app/data/models/bge-small-zh')
+        self.model = AutoModel.from_pretrained('/app/data/models/bge-small-zh')
         
         # 设置模型为评估模式
         self.model.eval()

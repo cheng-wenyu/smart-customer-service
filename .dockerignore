@@ -1,7 +1,7 @@
 # 排除所有大文件和数据
-models/
+# models/
 chroma_db/
-data/
+#data/
 logs/
 venv/
 __pycache__/

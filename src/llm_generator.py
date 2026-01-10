@@ -51,7 +51,7 @@ def generate_answer(question: str, contexts: List[str]) -> str:
                 {"role": "user", "content": prompt}
             ],
             temperature=0.3,  # 平衡创造性和确定性
-            max_tokens=500    # 控制回答长度
+            #max_tokens=500,    # 控制回答长度
             max_tokens=200  # 新增：限制生成回答的长度，节约token
         )
         answer = response.choices[0].message.content

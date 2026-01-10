@@ -29,6 +29,9 @@ RUN pip install --upgrade pip \
 # 复制应用代码
 COPY . .
 
+# 专门复制预下载的嵌入模型，避免运行时下载（关键！）
+COPY models/bge-small-zh/ /app/data/models/bge-small-zh/
+
 # 创建必要的目录
 RUN mkdir -p logs/monitoring data/models
 # 
