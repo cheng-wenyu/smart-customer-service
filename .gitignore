@@ -57,3 +57,5 @@ Thumbs.db
 .coverage
 htmlcov/
 .pytest_cache/
+data/models/
+models/
