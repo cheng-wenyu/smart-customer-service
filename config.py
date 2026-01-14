@@ -14,11 +14,12 @@ class Config:
     # 向量搜索配置
     VECTOR_DB_PATH: str = os.getenv("VECTOR_DB_PATH", "./data/vectors")
     EMBEDDING_MODEL: str = os.getenv("EMBEDDING_MODEL", "text-embedding-ada-002")
-    TOP_K_RESULTS: int = int(os.getenv("TOP_K_RESULTS", 3))
+    TOP_K_RESULTS: int = int(os.getenv("TOP_K_RESULTS", 2))
     
     # 对话配置
     MAX_CONVERSATION_HISTORY: int = 10
     CONFIDENCE_THRESHOLD: float = 0.5
+    LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")  # 从环境变量读取，默认INFO
     
     # 模型路径（本地模型）
     LOCAL_MODEL_PATH: str = os.getenv("LOCAL_MODEL_PATH", "./models")

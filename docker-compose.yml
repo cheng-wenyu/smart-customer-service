@@ -9,17 +9,20 @@ services:
     volumes:
       #- ./:/app  # 👈 新增这一行，这是实现热重载的关键
       - ./src:/app/src
-      - ./run.py:/app/run.py
       # 添加这行，确保关键文件被挂载
       - ./src/api_service_final.py:/app/src/api_service_final.py
+      - ./config.py:/app/config.py  # 新增这一行，强制挂载
+      #- ./src/config.py:/app/config.py  # 改为这个
       - ./data:/app/data
       - ./chroma_db:/app/chroma_db
       - ./logs:/app/logs
+    env_file:  # ← 新增这一行，替换 environment 部分
+      - .env     # ← 引用 .env 文件
     environment:
       - ENVIRONMENT=production
-      - LOG_LEVEL=INFO
+      - LOG_LEVEL=DEBUG
     restart: unless-stopped
-    command: uvicorn run:app --host 0.0.0.0 --port 8000 --reload
+    ## command: uvicorn run:app --host 0.0.0.0 --port 8000 --reload
     healthcheck:
       test: ["CMD", "python", "-c", "import requests; r=requests.get('http://localhost:8000/health'); exit(0) if r.status_code==200 else exit(1)"]
       interval: 30s

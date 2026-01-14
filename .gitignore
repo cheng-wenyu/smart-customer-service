@@ -9,22 +9,51 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+pip-wheel-metadata/
 
 # Conda
 environment.yml
-.env
+.conda/
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
-# Data
-data/models/
-data/vectors/
-logs/
+# 项目特定
+chroma_db/          # 向量数据库（生成的文件）
+logs/               # 日志文件
+*.log
+*.pid
+data/processed_*    # 处理后的数据文件
+data/models/        # 本地模型文件（如果有）
 
-# Docker
-Dockerfile
-docker-compose.yml
+# 系统
+.DS_Store
+Thumbs.db
+
+# 环境变量（但保留示例文件）
+.env
+.env.local
+.env.production
+.env.development
+.env.test
+
+# 临时文件
+*.tmp
+*.temp
+
+# 备份文件
+*.bak
+*.backup
+*.old
+
+# Jupyter
+.ipynb_checkpoints/
+
+# 测试覆盖率
+.coverage
+htmlcov/
+.pytest_cache/

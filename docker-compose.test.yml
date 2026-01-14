@@ -1,6 +1,0 @@
-version: '3.8'
-services:
-  rag-service-test:
-    build: .
-    ports:
-      - "8001:8000"  # 换个端口，避免冲突

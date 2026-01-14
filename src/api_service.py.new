@@ -1,9 +1,0 @@
-# 在文件开头添加必要的导入
-import os
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
-
-# 找到 app = FastAPI(...) 这行，在后面添加静态文件配置
-# 我会帮你找到合适的位置
-
-# 但更简单的方法是：我们直接修改原文件

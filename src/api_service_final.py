@@ -6,12 +6,14 @@
 import sys
 import os
 import traceback
+import logging
 from src.llm_generator import generate_answer  # 新增这行
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import List, Optional
 from fastapi.templating import Jinja2Templates
+from config import config
 import uvicorn
 
 # 添加src目录到Python路径
@@ -23,6 +25,19 @@ if project_root not in sys.path:
 # 现在可以正常导入
 from src.document_processor import DocumentProcessor
 from src.vector_search import VectorSearch
+
+# 基础日志配置
+logging.basicConfig(
+    level=getattr(logging, config.LOG_LEVEL.upper()), # 将字符串'INFO'转换为logging.INFO常量
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)  # 获取当前模块的日志记录器
+
+#logger.debug("="*60)
+#logger.debug(f"API 请求开始: {question}")
+#logger.debug(f"配置: TOP_K={config.TOP_K_RESULTS}, THRESHOLD={config.CONFIDENCE_THRESHOLD}")
+
+
 
 # 创建FastAPI应用
 app = FastAPI(

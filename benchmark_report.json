@@ -1,0 +1,102 @@
+{
+  "test_summary": {
+    "total_queries": 10,
+    "successful_queries": 0,
+    "failed_queries": 10,
+    "success_rate": 0,
+    "test_timestamp": "2026-01-12T20:40:11.199335",
+    "error": "所有查询都失败了"
+  },
+  "detailed_results": [
+    {
+      "query": "如何退货？",
+      "query_id": 1,
+      "success": false,
+      "response_time": 0.012095928192138672,
+      "error": "HTTP 404: {\"detail\":\"Not Found\"}",
+      "timestamp": "2026-01-12T20:40:11.195880",
+      "status_code": 404
+    },
+    {
+      "query": "你们的售后服务政策是什么？",
+      "query_id": 2,
+      "success": false,
+      "response_time": 0.011121034622192383,
+      "error": "HTTP 404: {\"detail\":\"Not Found\"}",
+      "timestamp": "2026-01-12T20:40:11.195395",
+      "status_code": 404
+    },
+    {
+      "query": "产品质量有问题怎么办？",
+      "query_id": 3,
+      "success": false,
+      "response_time": 0.010479927062988281,
+      "error": "HTTP 404: {\"detail\":\"Not Found\"}",
+      "timestamp": "2026-01-12T20:40:11.194851",
+      "status_code": 404
+    },
+    {
+      "query": "订单什么时候发货？",
+      "query_id": 4,
+      "success": false,
+      "response_time": 0.011958122253417969,
+      "error": "HTTP 404: {\"detail\":\"Not Found\"}",
+      "timestamp": "2026-01-12T20:40:11.196372",
+      "status_code": 404
+    },
+    {
+      "query": "支持哪些支付方式？",
+      "query_id": 5,
+      "success": false,
+      "response_time": 0.012579917907714844,
+      "error": "HTTP 404: {\"detail\":\"Not Found\"}",
+      "timestamp": "2026-01-12T20:40:11.197040",
+      "status_code": 404
+    },
+    {
+      "query": "运费怎么计算？",
+      "query_id": 6,
+      "success": false,
+      "response_time": 0.012718915939331055,
+      "error": "HTTP 404: {\"detail\":\"Not Found\"}",
+      "timestamp": "2026-01-12T20:40:11.197216",
+      "status_code": 404
+    },
+    {
+      "query": "可以开发票吗？",
+      "query_id": 7,
+      "success": false,
+      "response_time": 0.013049125671386719,
+      "error": "HTTP 404: {\"detail\":\"Not Found\"}",
+      "timestamp": "2026-01-12T20:40:11.197582",
+      "status_code": 404
+    },
+    {
+      "query": "商品有保修吗？",
+      "query_id": 8,
+      "success": false,
+      "response_time": 0.013717412948608398,
+      "error": "HTTP 404: {\"detail\":\"Not Found\"}",
+      "timestamp": "2026-01-12T20:40:11.198287",
+      "status_code": 404
+    },
+    {
+      "query": "如何联系客服？",
+      "query_id": 9,
+      "success": false,
+      "response_time": 0.013785600662231445,
+      "error": "HTTP 404: {\"detail\":\"Not Found\"}",
+      "timestamp": "2026-01-12T20:40:11.198435",
+      "status_code": 404
+    },
+    {
+      "query": "订单能修改吗？",
+      "query_id": 10,
+      "success": false,
+      "response_time": 0.014038562774658203,
+      "error": "HTTP 404: {\"detail\":\"Not Found\"}",
+      "timestamp": "2026-01-12T20:40:11.198727",
+      "status_code": 404
+    }
+  ]
+}

@@ -5,11 +5,19 @@
 
 import os
 import chromadb
+import sys
+import logging
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config import config
 from transformers import AutoTokenizer, AutoModel
 import torch
 import numpy as np
 from typing import List
 from .document_processor import DocumentProcessor
+
+#logger.debug(f"向量搜索输入: {question}")
+#logger.debug(f"向量搜索输出: {len(results)} 个结果")
+
 
 class VectorSearch:
     def __init__(self, persist_directory: str = "./chroma_db"):
@@ -80,7 +88,7 @@ class VectorSearch:
         
         print(f"🎉 成功将 {len(documents)} 个文档添加到向量数据库")
     
-    def search(self, query: str, top_k: int = 3) -> List[str]:
+    def search(self, query: str, top_k: int = config.TOP_K_RESULTS) -> List[str]:
         """
         搜索最相关的文档
         """
